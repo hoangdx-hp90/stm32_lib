@@ -1,4 +1,5 @@
-#include <stm32_lib.h>
+#include "stm32_lib.h"
+#if USE_STM32F103_GENERAL_LIB
 #include "stm32f10x_flash.h"
 #include <string.h>
 
@@ -222,3 +223,4 @@ void delay_us(uint32_t time){
 		for(i=0;i<10;i++);
 	}
 }
+#endif

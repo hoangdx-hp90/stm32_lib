@@ -1,8 +1,11 @@
+#include "stm32_lib.h"
+
+#if USE_STM32_LOOP
 #include "stdint.h"
 #include "string.h"
 #include "stm32f10x.h"
 #include "misc.h"
-#include "stm32_lib.h"
+
 
 #if USE_STM32_LOOP
 #define MAX_TICK_CALLBACK_FCN					16
@@ -176,4 +179,5 @@ void system_delay_us(uint32_t usec){
 	}
 }
 
+#endif
 #endif

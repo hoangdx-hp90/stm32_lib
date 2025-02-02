@@ -7,8 +7,8 @@
 
 #ifndef STM32_HELPER_H_
 #define STM32_HELPER_H_
-#include "stdint.h"
 #include "stm32_lib_config.h"
+#include "stdint.h"
 
 void update_irq_handler_function(int32_t IRQn, void fcn(void));
 void system_tick_init();
