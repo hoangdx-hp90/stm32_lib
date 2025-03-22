@@ -13,6 +13,27 @@
 void update_irq_handler_function(int32_t IRQn, void fcn(void));
 void system_tick_init();
 
+
+
+
+
+
+
+//====================================================
+// MAP FOR STM32H743 device
+#ifdef STM32H743xx
+#include "stm32h743xx.h"
+
+
+//Predefine MACRO
+#define IWDG_ReloadCounter() IWDG1->KR= 0x0000AAAAU
+#endif
+//====================================================
+#if 0
+
+
+
+
 #ifdef STM32F40_41xxx
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
@@ -118,8 +139,11 @@ void TIMER_StartIRQ(TIM_TypeDef * TIMx, uint32_t tick_rate_hz);
 void DMA_ClockCmd( DMA_Stream_TypeDef * stream, FunctionalState state);
 #endif
 
-void FLASH_WRITE(uint32_t base, uint8_t *data, uint16_t len);
-void FLASH_READ(uint32_t base, uint8_t *data, uint16_t len);
+#endif
+
+
+
+
 
 void system_timer_init(void* base);
 void delay_ms(uint32_t time);

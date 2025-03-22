@@ -42,6 +42,7 @@ extern int h_printf( const char *format_const, ...);
 | 22  |  FLASH_Sector_22   |   081C0000    |    081DFFFF   |       128       |     1792     |
 | 23  |  FLASH_Sector_23   |   081E0000    |    081FFFFF   |       128       |     1920     |
 -------------------------------------------------------------------------------------------*/
+
 #define FLASH_EEPROM_BASE_ADD	0x08040000
 #define FLASH_EEPROM_SIZE		(1024*2)
 #define FLASH_EEPROM_SECTOR		FLASH_Sector_6
@@ -127,14 +128,10 @@ void FLASH_EEPROM_WRITE(uint32_t offset, uint8_t *data, uint16_t len){
 
 
 
-#define FLASH_SECTOR_SIZE			1024*2
-#define FLASH_EEPROM_BASE_ADD		0x08060000
-#define FLASH_EEPROM_SIZE			(1024*2048)
-#define FLASH_HEADER				0x1234
-#define FLASH_EEPROM_BASE_ADDRESS	( NVIC_VectTab_FLASH + 127*2048)
-
-#define FLASH_UNLOCK()		FLASH_Unlock()
-#define FLASH_LOCK()		FLASH_Lock()
+#define FLASH_SECTOR_SIZE			1024*1
+#define FLASH_EEPROM_BASE_ADD		0x0803F800
+#define FLASH_UNLOCK()				FLASH_Unlock()
+#define FLASH_LOCK()				FLASH_Lock()
 
 #define FLASH_PROGRAM_HALF_WORD(add,val16) do{\
 		FLASH_ClearFlag(FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);\
@@ -148,31 +145,30 @@ void FLASH_EEPROM_WRITE(uint32_t offset, uint8_t *data, uint16_t len){
 
 
 //==============================================================================
-void FLASH_EEPROM_WRITE(uint32_t base, uint8_t *data, uint16_t len){
+void FLASH_EEPROM_WRITE(uint32_t offset, uint8_t *data, uint16_t len){
 	FLASH_Unlock();
-	FLASH_ErasePage(base);
+	FLASH_ErasePage(offset+FLASH_EEPROM_BASE_ADD);
 	while(len>4){
 		uint32_t tmp32 = *(uint32_t*)data;
 		len-=4; data+=4;
-		FLASH_ProgramWord(base,tmp32);base+=4;
+		FLASH_ProgramWord(offset+FLASH_EEPROM_BASE_ADD,tmp32);offset+=4;
 	}
 	while(len >=2){
 		uint16_t tmp16 = *(uint16_t*)data;
 		len-=2; data+=2;
-		FLASH_ProgramHalfWord(base,tmp16);base+=2;
+		FLASH_ProgramHalfWord(offset+FLASH_EEPROM_BASE_ADD,tmp16);offset+=2;
 	}
 	if(len){
 		uint16_t tmp16 = *data;
-		FLASH_ProgramHalfWord(base,tmp16);
+		FLASH_ProgramHalfWord(offset+FLASH_EEPROM_BASE_ADD,tmp16);
 	}
 	FLASH_Lock();
 }
 //=============================================================================
-void FLASH_EEPROM_READ(uint32_t base, uint8_t *data, uint16_t len){
-	uint32_t offset = 0 ;
-	uint8_t * p8 = (uint8_t*)base;
+void FLASH_EEPROM_READ(uint32_t offset, uint8_t *data, uint16_t len){
+	uint8_t * p8 = (uint8_t*)(offset+FLASH_EEPROM_BASE_ADD);
 	if(data == NULL) return ;
-	while(len--) *data++ = p8[offset++];
+	while(len--) *data++ = *p8++;
 }
 //=============================================================================
 #endif
